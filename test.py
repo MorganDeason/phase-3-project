@@ -1,14 +1,8 @@
 import folium
-import dash_bootstrap_components as dbc
-import pandas as pd
-import geopandas as gpd
-import numpy as np
 from dash import Dash, html, dash_table
-import plotly.graph_objs as go
 from data import gdf
 import flask
 from pyproj import Transformer
-from shapely import Point
 
 # from folium.features import GeoJson, GeoJsonTooltip, GeoJsonPopup
 
@@ -40,25 +34,24 @@ for _, r in gdf.iterrows():
         fire_centroid[1]+40), bad_lat_calc(fire_centroid[0]-100)], popup=r['FireName'])
     fire_marker.add_to(us_map)
 
-# All of the above appears to do something? Its very uneffiecient and needs improving
+# All of the lines fo the 'for'   appears to do something? Its very uneffiecient and needs improving
 # Possible improvement is to stop going from GeoSeries to Dict to list back to GeoSeries(Lines 22, 24, 26)
 
 us_map.save('us_map.html')
 
-app = Dash(__name__, title='Losing all Hope')
+app = Dash(__name__, title='Historical Fires')
 
 app.layout = html.Div(
-    children=[html.H1("Definitely a SUPER Excited Title"),
+    children=[html.H1("History of fires from 1878-2019"),
               html.Div(children=[
 
                   html.Div(id='map_container', children=[html.Iframe(id='map', src='./us_map', width='100%', height='1000')],
-                           style={'flex': 2}
+                           style={'flex': 2, 'padding': 5}
                            ),
 
                   html.Div(
                       [dash_table.DataTable(
-                          data=gdf[['FireName', 'FireYear', 'Acres',
-                                    'FireCause']].to_dict('records'),
+                          data=gdf[['FireName', 'FireYear', 'Acres','FireCause']].to_dict('records'),
                           columns=[{'id': column, 'name': column} for column in gdf.drop(columns=["geometry"]).columns],
                           style_as_list_view=True,
                           page_size=32,
@@ -74,9 +67,9 @@ app.layout = html.Div(
                                       },
                           style_table={'height': '1000px'}
                       )],
-                      style={'flex': 1}
+                      style={'flex': 1, 'padding': 5}
                   )
-              ], style={'display': 'flex', 'height': 1000})
+              ], style={'display': 'flex', 'height': 800})
               ], style={})
 
 
