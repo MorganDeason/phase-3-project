@@ -10,3 +10,5 @@ import geopandas as gpd
 #         'LONGITUDE', 'STATE']]
 
 gdf = gpd.read_file(r'phase-3-project-data/Wildfires_1878_2019_Polygon_Data/Shapefile/US_Wildfires_1878_2019.shp', rows=250)[['FireName', 'FireYear', 'Acres', 'FireCause', 'geometry']]
+
+gdf["Acres"] = gdf["Acres"].apply(round)
